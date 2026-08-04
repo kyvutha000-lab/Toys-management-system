@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playbox &mdash; Toy Store Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/Style/styles.css">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <span class="brand-mark">◍</span>
+        <h1>Playbox</h1>
+        <p>Toy Store Management System</p>
+      </div>
+      <form id="loginForm" class="login-form">
+        <label>Role
+          <select id="loginRole">
+            <option value="Admin">Admin</option>
+            <option value="Manager">Manager</option>
+            <option value="Cashier">Cashier</option>
+            <option value="Store Staff">Store Staff</option>
+          </select>
+        </label>
+        <label>Username
+          <input id="loginUser" type="text" placeholder="e.g. admin" value="admin" required>
+        </label>
+        <label>Password
+          <input id="loginPass" type="password" placeholder="Enter password" value="admin123" required>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ APP SHELL ============ -->
+  <div id="appShell" class="app-shell hidden">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-mark">◍</span>
+        <span class="brand-name">Playbox</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav"></nav>
+      <div class="sidebar-foot">
+        <div class="app-version">Playbox v1.0 &middot; Assignment group07</div>
+      </div>
+    </aside>
+
+    <div class="main-col">
+      <header class="topbar">
+        <button class="icon-btn" id="menuToggle" title="Toggle menu">☰</button>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-spacer"></div>
+
+        <div class="topbar-search" id="globalSearchWrap">
+          <input type="text" id="globalSearch" placeholder="Search toys, customers, suppliers…">
+        </div>
+
+        <div class="topbar-actions">
+          <div class="notif-wrap">
+            <button class="icon-btn" id="notifBtn" title="Notifications">🔔<span class="notif-dot"
+                id="notifDot"></span></button>
+            <div class="notif-panel hidden" id="notifPanel"></div>
+          </div>
+          <div class="user-wrap">
+            <button class="user-chip" id="userChip">
+              <span class="user-avatar" id="userAvatar">A</span>
+              <span class="user-info">
+                <span class="user-name" id="userNameLabel">Admin</span>
+                <span class="user-role" id="userRoleLabel">Admin</span>
+              </span>
+            </button>
+            <div class="user-menu hidden" id="userMenu">
+              <button data-action="profile">My profile</button>
+              <button data-action="password">Change password</button>
+              <button data-action="logout">Log out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+      
+      <main class="content" id="content">
+
+        <!-- ---------- DASHBOARD ---------- -->
+        <section class="view" id="view-dashboard">
+          <div class="stat-grid" id="statGrid"></div>
+          <div class="dash-grid">
+            <div class="card chart-card">
+              <div class="card-head">
+                <h3>Sales, last 7 days</h3>
+              </div>
+              <div id="salesChart" class="bar-chart"></div>
+            </div>
+            <div class="card chart-card">
+              <div class="card-head">
+                <h3>Inventory status</h3>
+              </div>
+              <div id="inventoryDonut" class="donut-wrap"></div>
+            </div>
+            <div class="card wide-card">
+              <div class="card-head">
+                <h3>Best selling toys</h3>
+              </div>
+              <div id="bestSellers"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- TOYS ---------- -->
+        <section class="view hidden" id="view-toys">
+          <div class="view-toolbar">
+            <input type="text" class="search-input" id="toySearch" placeholder="Search by name, SKU, or barcode…">
+            <select id="toyFilterCategory">
+              <option value="">All categories</option>
+            </select>
+            <select id="toyFilterStatus">
+              <option value="">All statuses</option>
+              <option>Available</option>
+              <option>Out of Stock</option>
+              <option>Discontinued</option>
+            </select>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addToyBtn">+ Add toy</button>
+          </div>
+          <div class="table-wrap">
+            <table id="toyTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- CATEGORIES ---------- -->
+        <section class="view hidden" id="view-categories">
+          <div class="view-toolbar">
+            <input type="text" class="search-input" id="categorySearch" placeholder="Search categories…">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addCategoryBtn">+ Add category</button>
+          </div>
+          <div class="tag-grid" id="categoryGrid"></div>
+        </section>
+
+        <!-- ---------- BRANDS ---------- -->
+        <section class="view hidden" id="view-brands">
+          <div class="view-toolbar">
+            <input type="text" class="search-input" id="brandSearch" placeholder="Search brands…">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addBrandBtn">+ Add brand</button>
+          </div>
+          <div class="tag-grid" id="brandGrid"></div>
+        </section>
+
+        <!-- ---------- SUPPLIERS ---------- -->
+        <section class="view hidden" id="view-suppliers">
+          <div class="view-toolbar">
+            <input type="text" class="search-input" id="supplierSearch" placeholder="Search suppliers…">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addSupplierBtn">+ Add supplier</button>
+          </div>
+          <div class="table-wrap">
+            <table id="supplierTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- CUSTOMERS ---------- -->
+        <section class="view hidden" id="view-customers">
+          <div class="view-toolbar">
+            <input type="text" class="search-input" id="customerSearch" placeholder="Search customers…">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addCustomerBtn">+ Register customer</button>
+          </div>
+          <div class="table-wrap">
+            <table id="customerTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- PURCHASES ---------- -->
+        <section class="view hidden" id="view-purchases">
+          <div class="view-toolbar">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addPurchaseBtn">+ Create purchase order</button>
+          </div>
+          <div class="table-wrap">
+            <table id="purchaseTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- INVENTORY ---------- -->
+        <section class="view hidden" id="view-inventory">
+          <div class="alert-banner" id="lowStockBanner"></div>
+          <div class="view-toolbar">
+            <div class="spacer"></div>
+            <button class="btn btn-secondary" id="stockInBtn">↑ Stock in</button>
+            <button class="btn btn-secondary" id="stockOutBtn">↓ Stock out</button>
+            <button class="btn btn-secondary" id="stockAdjustBtn">⚙ Adjust</button>
+          </div>
+          <div class="table-wrap">
+            <table id="inventoryTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- SALES / POS ---------- -->
+        <section class="view hidden" id="view-sales">
+          <div class="pos-grid">
+            <div class="pos-catalog">
+              <input type="text" class="search-input" id="posSearch" placeholder="Search toys to add to cart…">
+              <div class="pos-toy-grid" id="posToyGrid"></div>
+            </div>
+            <div class="pos-cart card">
+              <h3>Current sale</h3>
+              <label class="pos-field">Customer
+                <select id="posCustomer">
+                  <option value="">Walk-in customer</option>
+                </select>
+              </label>
+              <div class="cart-items" id="cartItems"></div>
+              <div class="pos-row"><span>Subtotal</span><span id="posSubtotal">$0.00</span></div>
+              <label class="pos-field-inline">Discount %
+                <input type="number" id="posDiscount" value="0" min="0" max="100">
+              </label>
+              <label class="pos-field-inline">Coupon code
+                <input type="text" id="posCoupon" placeholder="e.g. SAVE10">
+              </label>
+              <label class="pos-field-inline">Use loyalty points
+                <input type="number" id="posPoints" value="0" min="0">
+              </label>
+              <div class="pos-row"><span>Tax (<span id="posTaxRate">10</span>%)</span><span id="posTax">$0.00</span>
+              </div>
+              <div class="pos-row pos-total"><span>Total</span><span id="posTotal">$0.00</span></div>
+              <label class="pos-field">Payment method
+                <select id="posPayment">
+                  <option>Cash</option>
+                  <option>Credit/Debit Card</option>
+                  <option>Bank Transfer</option>
+                  <option>QR Payment</option>
+                </select>
+              </label>
+              <button class="btn btn-primary btn-block" id="completeSaleBtn">Complete sale</button>
+              <button class="btn btn-ghost btn-block" id="clearCartBtn">Clear cart</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- PROMOTIONS ---------- -->
+        <section class="view hidden" id="view-promotions">
+          <div class="view-toolbar">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addPromotionBtn">+ Create promotion</button>
+          </div>
+          <div class="table-wrap">
+            <table id="promotionTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- EMPLOYEES ---------- -->
+        <section class="view hidden" id="view-employees">
+          <div class="view-toolbar">
+            <input type="text" class="search-input" id="employeeSearch" placeholder="Search employees…">
+            <div class="spacer"></div>
+            <button class="btn btn-primary" id="addEmployeeBtn">+ Add employee</button>
+          </div>
+          <div class="table-wrap">
+            <table id="employeeTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ---------- REPORTS ---------- -->
+        <section class="view hidden" id="view-reports">
+          <div class="view-toolbar">
+            <select id="reportType">
+              <option value="inventory">Product Inventory Report</option>
+              <option value="sales">Sales Report</option>
+              <option value="purchase">Purchase Report</option>
+              <option value="customer">Customer Report</option>
+              <option value="supplier">Supplier Report</option>
+              <option value="revenue">Revenue Report</option>
+              <option value="profitloss">Profit &amp; Loss Report</option>
+              <option value="bestselling">Best Selling Toys Report</option>
+              <option value="lowstock">Low Stock Report</option>
+              <option value="employee">Employee Sales Performance Report</option>
+            </select>
+            <div class="spacer"></div>
+            <button class="btn btn-secondary" id="reportPrintBtn">🖶 Print</button>
+            <button class="btn btn-secondary" id="reportPdfBtn">⇩ PDF</button>
+            <button class="btn btn-secondary" id="reportExcelBtn">⇩ Excel</button>
+          </div>
+          <div class="card" id="reportOutput"></div>
+        </section>
+
+        <!-- ---------- SETTINGS ---------- -->
+            
+        <section class="view hidden" id="view-settings">
+          <div class="settings-grid">
+            <div class="card">
+              <h3>Store information</h3>
+              <label>Store name <input id="setStoreName" type="text"></label>
+              <label>Address <input id="setStoreAddress" type="text"></label>
+              <label>Phone <input id="setStorePhone" type="text"></label>
+            </div>
+            <div class="card">
+              <h3>Tax &amp; currency</h3>
+              <label>Tax rate (%) <input id="setTaxRate" type="number" step="0.1"></label>
+              <label>Currency symbol <input id="setCurrency" type="text" maxlength="3"></label>
+            </div>
+            <div class="card">
+              <h3>Business hours</h3>
+              <label>Opens <input id="setOpen" type="time"></label>
+              <label>Closes <input id="setClose" type="time"></label>
+            </div>
+            <div class="card">
+              <h3>Database</h3>
+              <p class="muted">Back up all store data to a file, or restore from a previous backup.</p>
+              <button class="btn btn-secondary btn-block" id="backupBtn">Backup database</button>
+              <label class="btn btn-ghost btn-block file-btn">Restore database
+                <input type="file" id="restoreInput" accept=".json" hidden>
+              </label>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="saveSettingsBtn">Save settings</button>
+        </section>
+
+        <!-- ---------- PROFILE ---------- -->
+        <section class="view hidden" id="view-profile">
+          <div class="card narrow-card">
+            <h3>My profile</h3>
+            <label>Full name <input id="profileName" type="text"></label>
+            <label>Username <input id="profileUsername" type="text" disabled></label>
+            <label>Role <input id="profileRole" type="text" disabled></label>
+            <button class="btn btn-primary" id="saveProfileBtn">Save changes</button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ MODAL ============ -->
+  <div class="modal-backdrop hidden" id="modalBackdrop">
+    <div class="modal" id="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Title</h3>
+        <button class="icon-btn" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/Script/app.js"></script>
+</body>
+
+</html>
